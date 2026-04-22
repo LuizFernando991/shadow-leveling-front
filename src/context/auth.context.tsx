@@ -7,7 +7,7 @@ export interface AuthContextValue {
   user: User | null;
   token: string | null;
   isReady: boolean;
-  setAuth: (token: string) => void;
+  setAuth: (token: string, user: User) => void;
   clearAuth: () => void;
 }
 
@@ -17,10 +17,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setTokenState] = useState<string | null>(() =>
     localStorage.getItem("auth_token"),
   );
+  const [userState, setUserState] = useState<User | null>(null);
 
-  const { data: user, isFetched } = useQuery<User | null>({
+  // Only query /me when we have a token but no user yet (e.g. page refresh)
+  const { data: queriedUser, isFetched } = useQuery<User | null>({
     queryKey: ["me", token],
-    enabled: !!token,
+    enabled: !!token && !userState,
     retry: false,
     queryFn: async () => {
       try {
@@ -33,25 +35,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  function setAuth(t: string) {
+  function setAuth(t: string, user: User) {
     localStorage.setItem("auth_token", t);
     setTokenState(t);
+    setUserState(user);
   }
 
   function clearAuth() {
     localStorage.removeItem("auth_token");
     setTokenState(null);
+    setUserState(null);
   }
+
+  const user = userState ?? queriedUser ?? null;
+  const isReady = !token || !!userState || isFetched;
 
   return (
     <AuthContext.Provider
-      value={{
-        user: user ?? null,
-        token,
-        isReady: !token || isFetched,
-        setAuth,
-        clearAuth,
-      }}
+      value={{ user, token, isReady, setAuth, clearAuth }}
     >
       {children}
     </AuthContext.Provider>
