@@ -15,6 +15,12 @@ export class EmailNotVerifiedError extends Error {
   }
 }
 
+export class RateLimitError extends Error {
+  constructor() {
+    super('Muitas tentativas. Tente novamente em instantes.')
+  }
+}
+
 async function parseError(res: Response): Promise<never> {
   const body = await res.json().catch(() => ({}))
   throw new Error((body as { error?: string }).error ?? 'Erro inesperado')
@@ -58,6 +64,17 @@ export async function verifyRegister(data: { email: string; code: string }): Pro
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
+  if (!res.ok) return parseError(res)
+  return res.json()
+}
+
+export async function resendRegistrationCode(email: string): Promise<{ message: string }> {
+  const res = await apiFetch('/api/auth/register/resend', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+  if (res.status === 429) throw new RateLimitError()
   if (!res.ok) return parseError(res)
   return res.json()
 }

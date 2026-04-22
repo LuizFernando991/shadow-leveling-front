@@ -16,6 +16,7 @@ import {
   verifyLogin,
   requestRegister,
   verifyRegister,
+  resendRegistrationCode,
   EmailNotVerifiedError,
 } from '@/services/auth.service'
 import { useAuth } from '@/hooks/useAuth'
@@ -32,9 +33,8 @@ export function LoginForm() {
   const [mode, setMode] = useState<Mode>('login')
   const [showPassword, setShowPassword] = useState(false)
   const [pendingEmail, setPendingEmail] = useState<string | null>(null)
-  // tracks which verify endpoint to call — may differ from mode when login
-  // detects an unverified email and sends the user to the register verify flow
   const [pendingVerifyMode, setPendingVerifyMode] = useState<Mode>('login')
+  const [resendFailed, setResendFailed] = useState(false)
 
   const loginForm = useForm<LoginInput>({ resolver: zodResolver(loginSchema) })
   const registerForm = useForm<RegisterInput>({ resolver: zodResolver(registerSchema) })
@@ -45,6 +45,20 @@ export function LoginForm() {
     navigate({ to: '/dashboard' })
   }
 
+  const resendRegistrationCodeMutation = useMutation({
+    mutationFn: resendRegistrationCode,
+    onSuccess: (_, email) => {
+      setResendFailed(false)
+      setPendingVerifyMode('register')
+      setPendingEmail(email)
+    },
+    onError: (_, email) => {
+      setResendFailed(true)
+      setPendingVerifyMode('register')
+      setPendingEmail(email)
+    },
+  })
+
   const requestLoginMutation = useMutation({
     mutationFn: requestLogin,
     onSuccess: (_, vars) => {
@@ -53,8 +67,7 @@ export function LoginForm() {
     },
     onError: (err, vars) => {
       if (err instanceof EmailNotVerifiedError) {
-        setPendingVerifyMode('register')
-        setPendingEmail(vars.email)
+        resendRegistrationCodeMutation.mutate(vars.email)
       }
     },
   })
@@ -83,6 +96,7 @@ export function LoginForm() {
   function switchMode(next: Mode) {
     setMode(next)
     setPendingEmail(null)
+    setResendFailed(false)
     loginForm.reset()
     registerForm.reset()
     verifyForm.reset()
@@ -90,19 +104,24 @@ export function LoginForm() {
     requestRegisterMutation.reset()
     verifyLoginMutation.reset()
     verifyRegisterMutation.reset()
+    resendRegistrationCodeMutation.reset()
   }
 
   function goBack() {
     setPendingEmail(null)
+    setResendFailed(false)
     verifyForm.reset()
     verifyLoginMutation.reset()
     verifyRegisterMutation.reset()
+    resendRegistrationCodeMutation.reset()
   }
 
   if (pendingEmail) {
     const unverifiedHint =
       mode === 'login' && pendingVerifyMode === 'register'
-        ? 'Seu email ainda não foi verificado. Use o código enviado durante o cadastro.'
+        ? resendFailed
+          ? 'Seu email ainda não foi verificado. Use o código enviado durante o cadastro.'
+          : 'Seu email ainda não foi verificado. Um novo código foi enviado.'
         : undefined
 
     return (
@@ -120,12 +139,14 @@ export function LoginForm() {
     )
   }
 
+  const isResending = resendRegistrationCodeMutation.isPending
+
   if (mode === 'login') {
     return (
       <LoginCredentialsForm
         form={loginForm}
-        isPending={credMutation.isPending}
-        isError={credMutation.isError && !(credMutation.error instanceof EmailNotVerifiedError)}
+        isPending={credMutation.isPending || isResending}
+        isError={credMutation.isError && !(credMutation.error instanceof EmailNotVerifiedError) && !isResending}
         error={credMutation.error}
         onSubmit={(data) => credMutation.mutate(data)}
         showPassword={showPassword}
