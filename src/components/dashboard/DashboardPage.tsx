@@ -14,7 +14,7 @@ export function DashboardPage() {
 
   return (
     <main className={styles.screen}>
-      <h1 className={styles.title}>SHADOW GYM</h1>
+      <h1 className={styles.title}>SHADOW LEVELING</h1>
       <p className={styles.email}>{user?.email}</p>
       <Button variant="ghost" onClick={logout}>SAIR DO SISTEMA</Button>
     </main>

@@ -85,7 +85,7 @@ export function LoadingOverlay({ canExit, onExited }: Props) {
           INICIALIZANDO SISTEMA
         </div>
 
-        <div className={styles.logo}>SHADOW GYM</div>
+        <div className={styles.logo}>SHADOW LEVELING</div>
         <div className={styles.sub}>Sistema de Evolução do Caçador</div>
 
         <div className={styles.spinnerWrap}>
