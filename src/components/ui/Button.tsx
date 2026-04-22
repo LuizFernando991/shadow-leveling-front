@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
+
 import styles from './Button.module.css'
 
 type Variant = 'primary' | 'ghost' | 'text'

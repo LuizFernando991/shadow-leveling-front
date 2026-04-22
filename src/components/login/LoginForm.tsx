@@ -1,9 +1,16 @@
-import { useState } from "react";
-import { flushSync } from "react-dom";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { flushSync } from "react-dom";
+import { useForm } from "react-hook-form";
+
+
+import { LoginCredentialsForm } from "./forms/LoginCredentialsForm";
+import { RegisterCredentialsForm } from "./forms/RegisterCredentialsForm";
+import { VerifyCodeForm } from "./forms/VerifyCodeForm";
+
+import { useAuth } from "@/hooks/useAuth";
 import {
   loginSchema,
   registerSchema,
@@ -21,10 +28,6 @@ import {
   getMe,
   EmailNotVerifiedError,
 } from "@/services/auth.service";
-import { useAuth } from "@/hooks/useAuth";
-import { LoginCredentialsForm } from "./forms/LoginCredentialsForm";
-import { RegisterCredentialsForm } from "./forms/RegisterCredentialsForm";
-import { VerifyCodeForm } from "./forms/VerifyCodeForm";
 
 type Mode = "login" | "register";
 

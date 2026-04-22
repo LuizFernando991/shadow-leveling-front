@@ -1,9 +1,9 @@
-import { ParticleCanvas } from './ParticleCanvas'
-import { PortalGlow } from './PortalGlow'
-import { SystemAlert } from './SystemAlert'
-import { LoginCard } from './LoginCard'
-import { LoginForm } from './LoginForm'
-import styles from './LoginPage.module.css'
+import { LoginCard } from "./LoginCard";
+import { LoginForm } from "./LoginForm";
+import styles from "./LoginPage.module.css";
+import { ParticleCanvas } from "./ParticleCanvas";
+import { PortalGlow } from "./PortalGlow";
+import { SystemAlert } from "./SystemAlert";
 
 export function LoginPage() {
   return (
@@ -21,5 +21,5 @@ export function LoginPage() {
         </LoginCard>
       </main>
     </>
-  )
+  );
 }

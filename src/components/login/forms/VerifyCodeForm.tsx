@@ -1,9 +1,12 @@
 import type { UseFormReturn } from 'react-hook-form'
-import type { CodeInput } from '@/schemas/auth.schema'
-import { FormField } from '@/components/ui/FormField'
-import { Button } from '@/components/ui/Button'
-import { KeyIcon } from '@/components/ui/icons'
+
 import styles from './forms.module.css'
+
+import { Button } from '@/components/ui/Button'
+import { FormField } from '@/components/ui/FormField'
+import { KeyIcon } from '@/components/ui/icons'
+import type { CodeInput } from '@/schemas/auth.schema'
+
 
 interface Props {
   form: UseFormReturn<CodeInput>

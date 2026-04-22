@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react'
-import styles from './LoginCard.module.css'
+import type { ReactNode } from "react";
+
+import styles from "./LoginCard.module.css";
 
 interface Props {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function LoginCard({ children }: Props) {
@@ -20,5 +21,5 @@ export function LoginCard({ children }: Props) {
 
       {children}
     </div>
-  )
+  );
 }

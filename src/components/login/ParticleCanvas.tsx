@@ -1,5 +1,6 @@
-import { useParticleCanvas } from '@/hooks/useParticleCanvas'
 import styles from './ParticleCanvas.module.css'
+
+import { useParticleCanvas } from '@/hooks/useParticleCanvas'
 
 export function ParticleCanvas() {
   const canvasRef = useParticleCanvas()

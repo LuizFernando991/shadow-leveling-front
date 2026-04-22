@@ -6,8 +6,9 @@ import {
   redirect,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { LoginPage } from '@/components/login/LoginPage'
+
 import { DashboardPage } from '@/components/dashboard/DashboardPage'
+import { LoginPage } from '@/components/login/LoginPage'
 import type { AuthContextValue } from '@/context/auth.context'
 
 interface RouterContext {

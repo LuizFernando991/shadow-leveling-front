@@ -1,7 +1,9 @@
 import { useNavigate } from '@tanstack/react-router'
-import { useAuth } from '@/hooks/useAuth'
-import { Button } from '@/components/ui/Button'
+
 import styles from './DashboardPage.module.css'
+
+import { Button } from '@/components/ui/Button'
+import { useAuth } from '@/hooks/useAuth'
 
 export function DashboardPage() {
   const { user, clearAuth } = useAuth()

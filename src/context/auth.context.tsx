@@ -1,5 +1,6 @@
-import { createContext, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { createContext, useState, type ReactNode } from "react";
+
 import { getMe } from "@/services/auth.service";
 import type { User } from "@/types/user";
 

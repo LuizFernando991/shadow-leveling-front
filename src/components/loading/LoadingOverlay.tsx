@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useLoadingCanvas } from '@/hooks/useLoadingCanvas'
+
 import styles from './LoadingOverlay.module.css'
+
+import { useLoadingCanvas } from '@/hooks/useLoadingCanvas'
 
 interface LogLine {
   status: string
@@ -57,6 +59,7 @@ export function LoadingOverlay({ canExit, onExited }: Props) {
 
   useEffect(() => {
     if (!animDone || !canExit) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsExiting(true)
     const t = setTimeout(onExited, 600)
     return () => clearTimeout(t)

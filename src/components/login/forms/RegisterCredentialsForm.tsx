@@ -1,11 +1,14 @@
 import type { UseFormReturn } from 'react-hook-form'
+
+import styles from './forms.module.css'
+
+import { Button } from '@/components/ui/Button'
+import { FormField } from '@/components/ui/FormField'
+import formFieldStyles from '@/components/ui/FormField.module.css'
+import { UserIcon, LockIcon } from '@/components/ui/icons'
 import type { RegisterInput } from '@/schemas/auth.schema'
 import { EmailTakenError } from '@/services/auth.service'
-import { FormField } from '@/components/ui/FormField'
-import { Button } from '@/components/ui/Button'
-import { UserIcon, LockIcon } from '@/components/ui/icons'
-import formFieldStyles from '@/components/ui/FormField.module.css'
-import styles from './forms.module.css'
+
 
 interface Props {
   form: UseFormReturn<RegisterInput>
