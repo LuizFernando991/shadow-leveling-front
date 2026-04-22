@@ -1,0 +1,88 @@
+.group {
+  margin-bottom: 1.125rem;
+  position: relative;
+}
+
+.group label {
+  display: block;
+  font-size: 0.6875rem;
+  letter-spacing: 3px;
+  color: var(--blue);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  position: absolute;
+  left: 0.875rem;
+  color: var(--muted);
+  pointer-events: none;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.inputWrap:focus-within .icon {
+  color: var(--blue);
+}
+
+/* applied to any <input> placed inside inputWrap */
+.inputWrap input {
+  width: 100%;
+  background: oklch(8% 0.04 240 / 0.8);
+  border: 1px solid oklch(72% 0.22 220 / 0.2);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0.8125rem 0.875rem 0.8125rem 2.5rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  letter-spacing: 1px;
+}
+
+.inputWrap input::placeholder {
+  color: oklch(45% 0.04 240);
+}
+
+.inputWrap input:focus {
+  border-color: oklch(72% 0.22 220 / 0.7);
+  box-shadow: 0 0 0 1px oklch(72% 0.22 220 / 0.2),
+    inset 0 0 20px oklch(72% 0.22 220 / 0.05);
+}
+
+/* password visibility toggle — used inside inputWrap */
+.inputWrap .togglePw {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.625rem;
+  letter-spacing: 1px;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.inputWrap .togglePw:hover {
+  color: var(--blue);
+}
+
+.fieldError {
+  display: block;
+  font-size: 0.6875rem;
+  color: oklch(65% 0.2 25);
+  letter-spacing: 1px;
+  margin-top: 0.3125rem;
+  padding-left: 4px;
+}

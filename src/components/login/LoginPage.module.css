@@ -1,0 +1,49 @@
+.screen {
+  position: relative;
+  z-index: 10;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1.25rem;
+}
+
+.cornerTl,
+.cornerBr {
+  position: fixed;
+  width: 3.75rem;
+  height: 3.75rem;
+  z-index: 5;
+  opacity: 0.4;
+}
+
+.cornerTl {
+  top: 1rem;
+  left: 1rem;
+  border-top: 1px solid var(--blue);
+  border-left: 1px solid var(--blue);
+}
+
+.cornerBr {
+  bottom: 1rem;
+  right: 1rem;
+  border-bottom: 1px solid var(--purple);
+  border-right: 1px solid var(--purple);
+}
+
+.statusBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--purple), var(--blue), var(--purple));
+  z-index: 100;
+  animation: barPulse 3s ease-in-out infinite;
+}
+
+@keyframes barPulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}

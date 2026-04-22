@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(0,180,255,0.25)"></stop>
+      <stop offset="100%" stop-color="rgba(120,60,220,0.25)"></stop>
+    </linearGradient>
+    <linearGradient id="border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00b4ff"></stop>
+      <stop offset="100%" stop-color="#7840dc"></stop>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0%" y1="0%" x2="60%" y2="100%">
+      <stop offset="0%" stop-color="#78dcff"></stop>
+      <stop offset="50%" stop-color="#00b4ff"></stop>
+      <stop offset="100%" stop-color="#8c50ff"></stop>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="blur"></feGaussianBlur>
+      <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+  </defs>
+
+  
+  
+  <polygon points="32,4 56.25,18 56.25,46 32,60 7.75,46 7.75,18" fill="url(#bg)" filter="url(#glow)"></polygon>
+  
+  <polygon points="32,4 56.25,18 56.25,46 32,60 7.75,46 7.75,18" fill="none" stroke="url(#border)" stroke-width="2.5" filter="url(#glow)"></polygon>
+  
+  <polygon points="32,14 46.25,22.5 46.25,39.5 32,48 17.75,39.5 17.75,22.5" fill="none" stroke="rgba(0,180,255,0.4)" stroke-width="1"></polygon>
+
+  
+  <polygon points="35,14 26,33 31,33 29,50 38,31 33,31 40,14" fill="url(#bolt)" filter="url(#glow)"></polygon>
+</svg>

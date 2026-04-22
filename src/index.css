@@ -1,0 +1,34 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --blue: oklch(72% 0.22 220);
+  --purple: oklch(55% 0.22 290);
+  --blue-dim: oklch(72% 0.22 220 / 0.15);
+  --purple-dim: oklch(55% 0.22 290 / 0.12);
+  --bg: #04040e;
+  --surface: oklch(10% 0.04 240 / 0.85);
+  --text: oklch(92% 0.02 220);
+  --muted: oklch(60% 0.05 240);
+  --border: oklch(72% 0.22 220 / 0.3);
+
+  font-family: 'Rajdhani', sans-serif;
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  overflow: hidden;
+}
