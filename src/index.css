@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -14,8 +16,14 @@
   --text: oklch(92% 0.02 220);
   --muted: oklch(60% 0.05 240);
   --border: oklch(72% 0.22 220 / 0.3);
+  --border-s: oklch(72% 0.22 220 / 0.5);
+  --green: oklch(72% 0.2 145);
+  --red: oklch(62% 0.22 25);
+  --yellow: oklch(80% 0.18 80);
+  --green-dim: oklch(72% 0.2 145 / 0.1);
+  --red-dim: oklch(62% 0.22 25 / 0.1);
 
-  font-family: 'Rajdhani', sans-serif;
+  font-family: "Rajdhani", sans-serif;
   color-scheme: dark;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
