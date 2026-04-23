@@ -7,11 +7,9 @@ import shared from "../styles/workout.shared.module.css";
 import styles from "./ActiveSessionPage.module.css";
 
 import { Button } from "@/components/ui/Button/Button";
+import { Input } from "@/components/ui/Input/Input";
 import { useTimer } from "@/hooks/useTimer";
-import {
-  preventNegativeNumberInput,
-  sanitizeNonNegativeNumber,
-} from "@/lib/number-input";
+import { sanitizeNonNegativeNumber } from "@/lib/number-input";
 import {
   saveSession,
   loadSession,
@@ -342,7 +340,7 @@ export function ActiveSessionPage({
                       <span className={styles.setNum}>S{s.num}</span>
                       {!isTime ? (
                         <>
-                          <input
+                          <Input
                             className={styles.setInput}
                             type="number"
                             min="0"
@@ -356,10 +354,9 @@ export function ActiveSessionPage({
                                 sanitizeNonNegativeNumber(e.target.value),
                               )
                             }
-                            onKeyDown={preventNegativeNumberInput}
                           />
                           <span className={styles.setUnit}>reps</span>
-                          <input
+                          <Input
                             className={styles.setInput}
                             type="number"
                             min="0"
@@ -373,13 +370,12 @@ export function ActiveSessionPage({
                                 sanitizeNonNegativeNumber(e.target.value),
                               )
                             }
-                            onKeyDown={preventNegativeNumberInput}
                           />
                           <span className={styles.setUnit}>kg</span>
                         </>
                       ) : (
                         <>
-                          <input
+                          <Input
                             className={styles.setInput}
                             type="number"
                             min="0"
@@ -393,7 +389,6 @@ export function ActiveSessionPage({
                                 sanitizeNonNegativeNumber(e.target.value),
                               )
                             }
-                            onKeyDown={preventNegativeNumberInput}
                           />
                           <span className={styles.setUnit}>seg</span>
                         </>

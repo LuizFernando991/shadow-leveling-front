@@ -5,6 +5,7 @@ import styles from "../styles/forms.shared.module.css";
 import { Button } from "@/components/ui/Button/Button";
 import { FormField } from "@/components/ui/FormField/FormField";
 import { KeyIcon } from "@/components/ui/icons/icons";
+import { Input } from "@/components/ui/Input/Input";
 import type { CodeInput } from "@/schemas/auth.schema";
 
 interface Props {
@@ -56,7 +57,7 @@ export function VerifyCodeForm({
         icon={<KeyIcon />}
         error={errors.code?.message}
       >
-        <input
+        <Input
           id="code"
           type="text"
           inputMode="numeric"

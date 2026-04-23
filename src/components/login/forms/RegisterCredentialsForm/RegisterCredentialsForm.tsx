@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { FormField } from "@/components/ui/FormField/FormField";
 import formFieldStyles from "@/components/ui/FormField/FormField.module.css";
 import { UserIcon, LockIcon } from "@/components/ui/icons/icons";
+import { Input } from "@/components/ui/Input/Input";
 import type { RegisterInput } from "@/schemas/auth.schema";
 import { EmailTakenError } from "@/services/auth.service";
 
@@ -51,7 +52,7 @@ export function RegisterCredentialsForm({
         icon={<UserIcon />}
         error={errors.email?.message}
       >
-        <input
+        <Input
           id="reg-email"
           type="email"
           placeholder="seu@email.com"
@@ -66,7 +67,7 @@ export function RegisterCredentialsForm({
         icon={<LockIcon />}
         error={errors.password?.message}
       >
-        <input
+        <Input
           id="reg-password"
           type={showPassword ? "text" : "password"}
           placeholder="••••••••"
@@ -89,7 +90,7 @@ export function RegisterCredentialsForm({
         icon={<LockIcon />}
         error={errors.confirmPassword?.message}
       >
-        <input
+        <Input
           id="reg-confirm"
           type={showPassword ? "text" : "password"}
           placeholder="••••••••"

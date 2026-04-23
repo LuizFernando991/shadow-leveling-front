@@ -188,7 +188,7 @@
   color: var(--muted);
 }
 
-.searchInput {
+.searchBar .searchInput {
   flex: 1;
   background: none;
   border: none;
@@ -197,9 +197,10 @@
   font-size: 0.8125rem;
   outline: none;
   letter-spacing: 0.5px;
+  clip-path: none;
 }
 
-.searchInput::placeholder {
+.searchBar .searchInput::placeholder {
   color: oklch(40% 0.04 240);
 }
 

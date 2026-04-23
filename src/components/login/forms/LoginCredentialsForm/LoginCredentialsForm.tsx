@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button/Button";
 import { FormField } from "@/components/ui/FormField/FormField";
 import formFieldStyles from "@/components/ui/FormField/FormField.module.css";
 import { UserIcon, LockIcon } from "@/components/ui/icons/icons";
+import { Input } from "@/components/ui/Input/Input";
 import type { LoginInput } from "@/schemas/auth.schema";
 
 interface Props {
@@ -44,7 +45,7 @@ export function LoginCredentialsForm({
         icon={<UserIcon />}
         error={errors.email?.message}
       >
-        <input
+        <Input
           id="email"
           type="email"
           placeholder="seu@email.com"
@@ -59,7 +60,7 @@ export function LoginCredentialsForm({
         icon={<LockIcon />}
         error={errors.password?.message}
       >
-        <input
+        <Input
           id="password"
           type={showPassword ? "text" : "password"}
           placeholder="••••••••"

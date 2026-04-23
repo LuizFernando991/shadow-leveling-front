@@ -174,7 +174,7 @@
   min-width: 1.75rem;
 }
 
-.setInput {
+.setRow .setInput {
   flex: 1;
   background: none;
   border: none;
@@ -191,18 +191,18 @@
   max-width: 4.5rem;
 }
 
-.setInput::-webkit-outer-spin-button,
-.setInput::-webkit-inner-spin-button {
+.setRow .setInput::-webkit-outer-spin-button,
+.setRow .setInput::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.setInput[type="number"] {
+.setRow .setInput[type="number"] {
   appearance: textfield;
   -moz-appearance: textfield;
 }
 
-.setInput:focus {
+.setRow .setInput:focus {
   border-color: var(--blue);
 }
 
