@@ -247,6 +247,17 @@
   max-width: 4.5rem;
 }
 
+.setInput::-webkit-outer-spin-button,
+.setInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.setInput[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
 .setInput:focus {
   border-color: var(--blue);
 }

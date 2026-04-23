@@ -2,6 +2,8 @@ import { useNavigate } from "@tanstack/react-router";
 
 import styles from "./SessionCompletePage.module.css";
 
+import { Button } from "@/components/ui/Button";
+
 interface SessionCompletePageProps {
   workoutId: string;
   doneSets: number;
@@ -88,20 +90,22 @@ export function SessionCompletePage({
           </div>
         </div>
 
-        <button
+        <Button
+          variant="unstyled"
           className={`${styles.btn} ${styles.btnPrimary}`}
           onClick={() =>
             navigate({ to: "/workout/$workoutId", params: { workoutId } })
           }
         >
           ← VOLTAR AO TREINO
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="unstyled"
           className={`${styles.btn} ${styles.btnGhost}`}
           onClick={() => navigate({ to: "/workout" })}
         >
           MEUS TREINOS
-        </button>
+        </Button>
       </div>
     </div>
   );

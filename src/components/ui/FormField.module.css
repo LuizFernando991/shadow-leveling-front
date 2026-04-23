@@ -19,6 +19,11 @@
   align-items: center;
 }
 
+.noIcon input,
+.noIcon textarea {
+  padding-left: 0.875rem;
+}
+
 .icon {
   position: absolute;
   left: 0.875rem;
@@ -33,29 +38,40 @@
   color: var(--blue);
 }
 
-/* applied to any <input> placed inside inputWrap */
-.inputWrap input {
+/* applied to any field placed inside inputWrap */
+.inputWrap input,
+.inputWrap textarea {
   width: 100%;
   background: oklch(8% 0.04 240 / 0.8);
   border: 1px solid oklch(72% 0.22 220 / 0.2);
   color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: "Rajdhani", sans-serif;
   font-size: 0.9375rem;
   font-weight: 500;
   padding: 0.8125rem 0.875rem 0.8125rem 2.5rem;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
   letter-spacing: 1px;
 }
 
-.inputWrap input::placeholder {
+.inputWrap textarea {
+  resize: vertical;
+  min-height: 4.375rem;
+}
+
+.inputWrap input::placeholder,
+.inputWrap textarea::placeholder {
   color: oklch(45% 0.04 240);
 }
 
-.inputWrap input:focus {
+.inputWrap input:focus,
+.inputWrap textarea:focus {
   border-color: oklch(72% 0.22 220 / 0.7);
-  box-shadow: 0 0 0 1px oklch(72% 0.22 220 / 0.2),
+  box-shadow:
+    0 0 0 1px oklch(72% 0.22 220 / 0.2),
     inset 0 0 20px oklch(72% 0.22 220 / 0.05);
 }
 
@@ -67,7 +83,7 @@
   border: none;
   color: var(--muted);
   cursor: pointer;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: "Rajdhani", sans-serif;
   font-size: 0.625rem;
   letter-spacing: 1px;
   padding: 0.25rem;

@@ -34,6 +34,7 @@ export interface WorkoutExercise {
 
 export interface WorkoutDetail extends Workout {
   exercises: WorkoutExercise[];
+  done_today: boolean;
 }
 
 export interface WorkoutSession {

@@ -1,0 +1,67 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: oklch(4% 0.04 240 / 0.8);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  transition: opacity 0.25s;
+}
+
+.overlayHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overlayHidden .sheet {
+  transform: translateY(100%);
+}
+
+.sheet {
+  width: 100%;
+  max-width: 37.5rem;
+  margin: 0 auto;
+  background: oklch(9% 0.05 240);
+  border: 1px solid var(--border-s);
+  border-bottom: none;
+  padding: 1.5rem 1.25rem 2rem;
+  max-height: 85dvh;
+  overflow-y: auto;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.sheetHandle {
+  width: 2.5rem;
+  height: 3px;
+  background: var(--border-s);
+  border-radius: 2px;
+  margin: 0 auto 1.25rem;
+}
+
+.sheetTitle {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 48rem) {
+  .overlay {
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .overlayHidden .sheet {
+    transform: translateY(1rem) scale(0.98);
+  }
+
+  .sheet {
+    border-bottom: 1px solid var(--border-s);
+    max-height: min(85dvh, 44rem);
+    box-shadow: 0 1.25rem 4rem oklch(0% 0 0 / 0.3);
+  }
+}

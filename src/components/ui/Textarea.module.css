@@ -1,0 +1,23 @@
+.textarea {
+  width: 100%;
+  background: oklch(8% 0.04 240 / 0.8);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.875rem;
+  padding: 0.6875rem 0.875rem;
+  outline: none;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  transition: border-color 0.2s;
+  letter-spacing: 0.5px;
+  resize: vertical;
+  min-height: 4.375rem;
+}
+
+.textarea:focus {
+  border-color: var(--border-s);
+}
+
+.textarea::placeholder {
+  color: oklch(40% 0.04 240);
+}

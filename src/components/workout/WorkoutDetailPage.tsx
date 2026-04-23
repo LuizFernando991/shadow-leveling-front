@@ -6,6 +6,12 @@ import { useForm, useWatch } from "react-hook-form";
 
 import styles from "./WorkoutDetailPage.module.css";
 
+import { Button } from "@/components/ui/Button";
+import { FormField } from "@/components/ui/FormField";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { WorkoutModal } from "@/components/workout/WorkoutModal";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { workoutSchema, type WorkoutFormInput } from "@/schemas/workout.schema";
 import { listExercises } from "@/services/exercise.service";
 import { createWorkoutSession } from "@/services/workout-session.service";
@@ -16,6 +22,7 @@ import {
   addWorkoutExercise,
   updateWorkoutExercise,
   removeWorkoutExercise,
+  reorderWorkoutExercises,
 } from "@/services/workout.service";
 import type { Exercise } from "@/types/exercise";
 import type { WorkoutDetail, WorkoutExercise, WeekDay } from "@/types/workout";
@@ -33,7 +40,6 @@ function setLabel(we: WorkoutExercise): string {
   return `${we.sets}×${we.reps_min}${we.reps_max && we.reps_max !== we.reps_min ? `–${we.reps_max}` : ""} reps`;
 }
 
-/* ── Edit workout sheet — receives workout directly to avoid form empty-on-open ── */
 interface EditSheetProps {
   open: boolean;
   onClose: () => void;
@@ -66,7 +72,7 @@ function EditWorkoutSheet({ open, onClose, workout }: EditSheetProps) {
   function toggleDay(key: WeekDay) {
     setValue(
       "days_of_week",
-      days.includes(key) ? days.filter((d) => d !== key) : [...days, key],
+      days.includes(key) ? days.filter((day) => day !== key) : [...days, key],
     );
   }
 
@@ -88,91 +94,77 @@ function EditWorkoutSheet({ open, onClose, workout }: EditSheetProps) {
   });
 
   return (
-    <div
-      className={`${styles.overlay} ${open ? "" : styles.overlayHidden}`}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div className={styles.sheet}>
-        <div className={styles.sheetHandle} />
-        <div className={styles.sheetTitle}>EDITAR TREINO</div>
-        <form onSubmit={handleSubmit((d) => updateMutation.mutate(d))}>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>NOME DO TREINO</label>
-            <input className={styles.input} {...register("name")} />
-            {errors.name && (
-              <span className={styles.fieldError}>{errors.name.message}</span>
-            )}
-          </div>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>DESCRIÇÃO (OPCIONAL)</label>
-            <textarea
-              className={styles.textarea}
-              {...register("description")}
-            />
-          </div>
+    <WorkoutModal open={open} onClose={onClose} title="EDITAR TREINO">
+      <form onSubmit={handleSubmit((data) => updateMutation.mutate(data))}>
+        <FormField label="NOME DO TREINO" error={errors.name?.message}>
+          <Input {...register("name")} />
+        </FormField>
+        <FormField label="DESCRIÇÃO (OPCIONAL)">
+          <Textarea {...register("description")} />
+        </FormField>
 
-          <div className={styles.sectionLabel}>DIAS DA SEMANA</div>
-          <div className={styles.daysRow}>
-            {DAYS.map(({ key, label }) => (
-              <button
-                key={key}
-                type="button"
-                className={`${styles.dayPill} ${days.includes(key) ? styles.dayPillOn : ""}`}
-                onClick={() => toggleDay(key)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          {errors.days_of_week && (
-            <span className={styles.fieldError}>
-              {errors.days_of_week.message}
-            </span>
-          )}
+        <div className={styles.sectionLabel}>DIAS DA SEMANA</div>
+        <div className={styles.daysRow}>
+          {DAYS.map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              className={`${styles.dayPill} ${days.includes(key) ? styles.dayPillOn : ""}`}
+              onClick={() => toggleDay(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {errors.days_of_week && (
+          <span className={styles.fieldError}>
+            {errors.days_of_week.message}
+          </span>
+        )}
 
-          <div className={styles.toggleRow}>
-            <div>
-              <div className={styles.toggleLabel}>TREINO ATIVO</div>
-              <div className={styles.toggleDesc}>
-                Aparece no planejamento semanal
-              </div>
+        <div className={styles.toggleRow}>
+          <div>
+            <div className={styles.toggleLabel}>TREINO ATIVO</div>
+            <div className={styles.toggleDesc}>
+              Aparece no planejamento semanal
             </div>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={active ?? true}
-                onChange={(e) => setValue("active", e.target.checked)}
-              />
-              <div className={styles.toggleTrack} />
-              <div className={styles.toggleThumb} />
-            </label>
           </div>
+          <label className={styles.toggle}>
+            <input
+              type="checkbox"
+              checked={active ?? true}
+              onChange={(event) => setValue("active", event.target.checked)}
+            />
+            <div className={styles.toggleTrack} />
+            <div className={styles.toggleThumb} />
+          </label>
+        </div>
 
-          <button
-            type="button"
-            className={`${styles.btn} ${styles.btnDanger}`}
-            onClick={() => deleteMutation.mutate()}
-            disabled={deleteMutation.isPending}
-          >
-            ✕ EXCLUIR TREINO
-          </button>
-          <button
-            type="submit"
-            className={styles.btn}
-            disabled={updateMutation.isPending}
-          >
-            {updateMutation.isPending ? "SALVANDO..." : "✓ SALVAR ALTERAÇÕES"}
-          </button>
-          {updateMutation.isError && (
-            <p className={styles.serverError}>{updateMutation.error.message}</p>
-          )}
-        </form>
-      </div>
-    </div>
+        <Button
+          variant="unstyled"
+          type="button"
+          className={`${styles.btn}`}
+          onClick={() => deleteMutation.mutate()}
+          disabled={deleteMutation.isPending}
+        >
+          EXCLUIR TREINO
+        </Button>
+        <Button
+          variant="unstyled"
+          type="submit"
+          className={styles.btn}
+          disabled={updateMutation.isPending}
+        >
+          {updateMutation.isPending ? "SALVANDO..." : "SALVAR ALTERAÇÕES"}
+        </Button>
+        {updateMutation.isError && (
+          <p className={styles.serverError}>{updateMutation.error.message}</p>
+        )}
+      </form>
+    </WorkoutModal>
   );
 }
 
-/* ── Add / edit exercise sheet ── */
 interface ExerciseSheetProps {
   open: boolean;
   onClose: () => void;
@@ -198,27 +190,36 @@ function ExerciseSheet({
   const [repsMax, setRepsMax] = useState(String(editing?.reps_max ?? 12));
   const [duration, setDuration] = useState(String(editing?.duration ?? 60));
   const [note, setNote] = useState(editing?.note ?? "");
+  const debouncedSearch = useDebouncedValue(search.trim(), 250);
 
-  const { data: exercises = [] } = useQuery({
-    queryKey: ["exercises"],
-    queryFn: () => listExercises(),
-    enabled: open,
+  const { data: exercises = [], isLoading: isLoadingExercises } = useQuery({
+    queryKey: ["exercises", debouncedSearch],
+    queryFn: () => listExercises(debouncedSearch || undefined),
+    enabled: open && !editing,
   });
 
   const isTime = selectedEx?.type === "time";
-  const filtered = exercises.filter((e) =>
-    e.name.toLowerCase().includes(search.toLowerCase()),
-  );
 
   function buildData() {
     return {
       exercise_id: selectedEx!.id,
-      sets: parseInt(sets) || 3,
-      reps_min: isTime ? null : parseInt(repsMin) || null,
-      reps_max: isTime ? null : parseInt(repsMax) || null,
-      duration: isTime ? parseInt(duration) || null : null,
+      sets: parseInt(sets, 10) || 3,
+      reps_min: isTime ? null : parseInt(repsMin, 10) || null,
+      reps_max: isTime ? null : parseInt(repsMax, 10) || null,
+      duration: isTime ? parseInt(duration, 10) || null : null,
       note: note || null,
     };
+  }
+
+  function handleClose() {
+    setSearch("");
+    setSelectedEx(null);
+    setSets("3");
+    setRepsMin("8");
+    setRepsMax("12");
+    setDuration("60");
+    setNote("");
+    onClose();
   }
 
   const addMutation = useMutation({
@@ -244,179 +245,170 @@ function ExerciseSheet({
     },
   });
 
-  function handleClose() {
-    setSearch("");
-    setSelectedEx(null);
-    onClose();
-  }
-
   function save() {
     if (!selectedEx && !editing) return;
     if (editing) {
       editMutation.mutate();
-    } else {
-      addMutation.mutate();
+      return;
     }
+    addMutation.mutate();
   }
 
   const isPending = addMutation.isPending || editMutation.isPending;
   const error = addMutation.error ?? editMutation.error;
 
   return (
-    <div
-      className={`${styles.overlay} ${open ? "" : styles.overlayHidden}`}
-      onClick={(e) => e.target === e.currentTarget && handleClose()}
+    <WorkoutModal
+      open={open}
+      onClose={handleClose}
+      title={editing ? "EDITAR EXERCÍCIO" : "ADICIONAR EXERCÍCIO"}
     >
-      <div className={styles.sheet}>
-        <div className={styles.sheetHandle} />
-        <div className={styles.sheetTitle}>
-          {editing ? "EDITAR EXERCÍCIO" : "ADICIONAR EXERCÍCIO"}
-        </div>
-
-        {!editing && (
-          <>
-            <div className={styles.searchBar}>
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+      {!editing && (
+        <>
+          <div className={styles.searchBar}>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              className={styles.searchInput}
+              placeholder="Buscar exercício..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </div>
+          <div className={styles.exList}>
+            {isLoadingExercises && (
+              <div className={styles.exListHint}>Buscando exercícios...</div>
+            )}
+            {!isLoadingExercises && exercises.length === 0 && (
+              <div className={styles.exListHint}>
+                Nenhum exercício encontrado
+              </div>
+            )}
+            {exercises.map((exercise) => (
+              <div
+                key={exercise.id}
+                className={`${styles.exPickItem} ${selectedEx?.id === exercise.id ? styles.exPickItemSel : ""}`}
+                onClick={() => setSelectedEx(exercise)}
               >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
-              <input
-                className={styles.searchInput}
-                placeholder="Buscar exercício..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <div className={styles.exList}>
-              {filtered.map((ex) => (
-                <div
-                  key={ex.id}
-                  className={`${styles.exPickItem} ${selectedEx?.id === ex.id ? styles.exPickItemSel : ""}`}
-                  onClick={() => setSelectedEx(ex)}
-                >
-                  <div className={styles.exTypeIcon}>
-                    {ex.type === "time" ? (
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
-                      </svg>
-                    ) : (
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M6 5v14M6 5l3 3M6 5l-3 3M18 19V5M18 19l3-3M18 19l-3-3" />
-                      </svg>
-                    )}
-                  </div>
-                  <div>
-                    <div className={styles.exPickName}>{ex.name}</div>
-                    <div className={styles.exPickDetail}>
-                      {ex.type === "time" ? "Tempo" : "Repetições"} · {ex.unit}
-                    </div>
-                  </div>
-                  {selectedEx?.id === ex.id && (
-                    <span className={styles.exPickCheck}>✓</span>
+                <div className={styles.exTypeIcon}>
+                  {exercise.type === "time" ? (
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 6v6l4 2" />
+                    </svg>
+                  ) : (
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M6 5v14M6 5l3 3M6 5l-3 3M18 19V5M18 19l3-3M18 19l-3-3" />
+                    </svg>
                   )}
                 </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {(selectedEx ?? editing) && (
-          <>
-            {selectedEx && (
-              <div className={styles.selectedExBadge}>{selectedEx.name}</div>
-            )}
-            <div className={styles.inputGrid}>
-              <div className={styles.field}>
-                <label className={styles.fieldLabel}>SÉRIES</label>
-                <input
-                  className={styles.input}
-                  type="number"
-                  value={sets}
-                  onChange={(e) => setSets(e.target.value)}
-                  min="1"
-                />
-              </div>
-              {!isTime ? (
-                <>
-                  <div className={styles.field}>
-                    <label className={styles.fieldLabel}>REPS MÍN</label>
-                    <input
-                      className={styles.input}
-                      type="number"
-                      value={repsMin}
-                      onChange={(e) => setRepsMin(e.target.value)}
-                    />
+                <div>
+                  <div className={styles.exPickName}>{exercise.name}</div>
+                  <div className={styles.exPickDetail}>
+                    {exercise.type === "time" ? "Tempo" : "Repetições"} ·{" "}
+                    {exercise.unit}
                   </div>
-                  <div className={styles.field}>
-                    <label className={styles.fieldLabel}>REPS MÁX</label>
-                    <input
-                      className={styles.input}
-                      type="number"
-                      value={repsMax}
-                      onChange={(e) => setRepsMax(e.target.value)}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className={styles.field}>
-                  <label className={styles.fieldLabel}>TEMPO (SEG)</label>
-                  <input
-                    className={styles.input}
-                    type="number"
-                    value={duration}
-                    onChange={(e) => setDuration(e.target.value)}
-                  />
                 </div>
-              )}
-            </div>
-            <div className={styles.field}>
-              <label className={styles.fieldLabel}>NOTA (OPCIONAL)</label>
-              <input
-                className={styles.input}
-                placeholder="Ex: Controlar descida..."
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-              />
-            </div>
-          </>
-        )}
+                {selectedEx?.id === exercise.id && (
+                  <span className={styles.exPickCheck}>✓</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
-        <button
-          className={styles.btn}
-          onClick={save}
-          disabled={isPending || (!selectedEx && !editing)}
-        >
-          {isPending ? "SALVANDO..." : editing ? "✓ SALVAR" : "+ ADICIONAR"}
-        </button>
-        {error && <p className={styles.serverError}>{error.message}</p>}
-      </div>
-    </div>
+      {(selectedEx ?? editing) && (
+        <>
+          {selectedEx && (
+            <div className={styles.selectedExBadge}>{selectedEx.name}</div>
+          )}
+          <div className={styles.inputGrid}>
+            <FormField label="SÉRIES">
+              <Input
+                type="number"
+                value={sets}
+                onChange={(event) => setSets(event.target.value)}
+                min="1"
+              />
+            </FormField>
+            {!isTime ? (
+              <>
+                <FormField label="REPS MÍN">
+                  <Input
+                    type="number"
+                    value={repsMin}
+                    onChange={(event) => setRepsMin(event.target.value)}
+                  />
+                </FormField>
+                <FormField label="REPS MÁX">
+                  <Input
+                    type="number"
+                    value={repsMax}
+                    onChange={(event) => setRepsMax(event.target.value)}
+                  />
+                </FormField>
+              </>
+            ) : (
+              <FormField label="TEMPO (SEG)">
+                <Input
+                  type="number"
+                  value={duration}
+                  onChange={(event) => setDuration(event.target.value)}
+                />
+              </FormField>
+            )}
+          </div>
+          <FormField label="NOTA (OPCIONAL)">
+            <Input
+              placeholder="Ex: Controlar descida..."
+              value={note}
+              onChange={(event) => setNote(event.target.value)}
+            />
+          </FormField>
+        </>
+      )}
+
+      <Button
+        variant="unstyled"
+        className={styles.btn}
+        onClick={save}
+        disabled={isPending || (!selectedEx && !editing)}
+      >
+        {isPending
+          ? "SALVANDO..."
+          : editing
+            ? "SALVAR EXERCÍCIO"
+            : "ADICIONAR EXERCÍCIO"}
+      </Button>
+      {error && <p className={styles.serverError}>{error.message}</p>}
+    </WorkoutModal>
   );
 }
 
-/* ── Main page ── */
 interface WorkoutDetailPageProps {
   workoutId: string;
 }
@@ -435,6 +427,21 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
 
   const removeExMutation = useMutation({
     mutationFn: (weId: string) => removeWorkoutExercise(workoutId, weId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workout", workoutId] });
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+    },
+  });
+
+  const reorderMutation = useMutation({
+    mutationFn: (nextExercises: WorkoutExercise[]) =>
+      reorderWorkoutExercises(
+        workoutId,
+        nextExercises.map((exercise, index) => ({
+          id: exercise.id,
+          sort_order: index,
+        })),
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workout", workoutId] });
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
@@ -460,6 +467,24 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
   const exercises =
     workout?.exercises?.slice().sort((a, b) => a.sort_order - b.sort_order) ??
     [];
+  const completedToday = workout?.done_today ?? false;
+
+  function moveExercise(weId: string, direction: -1 | 1) {
+    const currentIndex = exercises.findIndex(
+      (exercise) => exercise.id === weId,
+    );
+    const nextIndex = currentIndex + direction;
+    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= exercises.length)
+      return;
+
+    const nextExercises = exercises.slice();
+    [nextExercises[currentIndex], nextExercises[nextIndex]] = [
+      nextExercises[nextIndex],
+      nextExercises[currentIndex],
+    ];
+
+    reorderMutation.mutate(nextExercises);
+  }
 
   return (
     <div className={styles.page}>
@@ -483,12 +508,13 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
           <span className={styles.topbarTitle}>EXERCÍCIOS</span>
         </div>
         {workout && (
-          <button
+          <Button
+            variant="unstyled"
             className={`${styles.btn} ${styles.btnSm}`}
             onClick={() => setShowEdit(true)}
           >
             EDITAR
-          </button>
+          </Button>
         )}
       </header>
 
@@ -508,6 +534,11 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
               <span className={styles.metaText}>
                 {exercises.length} exercício{exercises.length !== 1 ? "s" : ""}
               </span>
+              {completedToday && (
+                <span className={`${styles.badge} ${styles.badgeDone}`}>
+                  FEITO HOJE
+                </span>
+              )}
             </div>
           </div>
         )}
@@ -527,7 +558,7 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
           </div>
         )}
 
-        {exercises.map((we, i) => (
+        {exercises.map((we, index) => (
           <div
             key={we.id}
             className={styles.exRow}
@@ -537,7 +568,7 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
             }}
           >
             <span className={styles.exNum}>
-              {String(i + 1).padStart(2, "0")}
+              {String(index + 1).padStart(2, "0")}
             </span>
             <div className={styles.exInfo}>
               <div className={styles.exName}>{we.exercise.name}</div>
@@ -547,48 +578,78 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
                 {we.note ? ` · ${we.note}` : ""}
               </div>
             </div>
-            <button
-              className={styles.iconBtn}
-              onClick={(e) => {
-                e.stopPropagation();
-                removeExMutation.mutate(we.id);
-              }}
-              disabled={removeExMutation.isPending}
-            >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            <div className={styles.exActions}>
+              <button
+                className={styles.orderBtn}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  moveExercise(we.id, -1);
+                }}
+                disabled={reorderMutation.isPending || index === 0}
+                aria-label="Mover exercício para cima"
               >
-                <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
-              </svg>
-            </button>
+                ↑
+              </button>
+              <button
+                className={styles.orderBtn}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  moveExercise(we.id, 1);
+                }}
+                disabled={
+                  reorderMutation.isPending || index === exercises.length - 1
+                }
+                aria-label="Mover exercício para baixo"
+              >
+                ↓
+              </button>
+              <button
+                className={styles.iconBtn}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  removeExMutation.mutate(we.id);
+                }}
+                disabled={removeExMutation.isPending}
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
+                </svg>
+              </button>
+            </div>
           </div>
         ))}
 
-        {workout && exercises.length > 0 && (
-          <button
-            className={`${styles.btn} ${styles.btnGreen}`}
-            style={{ marginTop: "1.5rem" }}
-            onClick={() => startSessionMutation.mutate()}
-            disabled={startSessionMutation.isPending}
-          >
-            {startSessionMutation.isPending
-              ? "INICIANDO..."
-              : "⚡ INICIAR SESSÃO"}
-          </button>
+        {reorderMutation.isError && (
+          <p className={styles.serverError}>{reorderMutation.error.message}</p>
         )}
         {startSessionMutation.isError && (
           <p className={styles.serverError}>
             {startSessionMutation.error.message}
           </p>
         )}
+
+        {workout && exercises.length > 0 && (
+          <Button
+            variant="unstyled"
+            className={`${styles.btn}`}
+            style={{ marginTop: "1.5rem" }}
+            onClick={() => startSessionMutation.mutate()}
+            disabled={startSessionMutation.isPending}
+          >
+            {startSessionMutation.isPending ? "INICIANDO..." : "INICIAR SESSÃO"}
+          </Button>
+        )}
       </div>
 
-      <button
+      <Button
+        variant="unstyled"
         className={styles.fab}
         onClick={() => {
           setEditingWE(null);
@@ -606,7 +667,7 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
         >
           <path d="M12 5v14M5 12h14" />
         </svg>
-      </button>
+      </Button>
 
       {workout && (
         <EditWorkoutSheet
@@ -616,6 +677,7 @@ export function WorkoutDetailPage({ workoutId }: WorkoutDetailPageProps) {
         />
       )}
       <ExerciseSheet
+        key={editingWE?.id ?? (showAddEx ? "new" : "idle")}
         open={showAddEx || !!editingWE}
         onClose={() => {
           setShowAddEx(false);

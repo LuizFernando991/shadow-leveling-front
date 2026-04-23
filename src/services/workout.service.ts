@@ -106,3 +106,15 @@ export async function removeWorkoutExercise(
   });
   if (!res.ok) return parseError(res);
 }
+
+export async function reorderWorkoutExercises(
+  workoutId: string,
+  exercises: Array<{ id: string; sort_order: number }>,
+): Promise<void> {
+  const res = await apiFetch(`/api/workouts/${workoutId}/exercises/reorder`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ exercises }),
+  });
+  if (!res.ok) return parseError(res);
+}

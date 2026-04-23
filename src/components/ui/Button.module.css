@@ -8,7 +8,7 @@
   );
   border: 1px solid oklch(72% 0.22 220 / 0.5);
   color: var(--blue);
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 4px;
@@ -22,7 +22,7 @@
 }
 
 .primary::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, var(--blue), var(--purple));
@@ -43,7 +43,7 @@
   transform: scale(0.99);
 }
 
-.primary[data-state='success'] {
+.primary[data-state="success"] {
   border-color: oklch(72% 0.22 145);
   color: oklch(72% 0.22 145);
 }
@@ -59,19 +59,28 @@
 }
 
 .primary::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 60%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, oklch(100% 0 0 / 0.08), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(100% 0 0 / 0.08),
+    transparent
+  );
   animation: shimmer 3s ease-in-out infinite;
 }
 
 @keyframes shimmer {
-  0%   { left: -100%; }
-  100% { left: 200%; }
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
 }
 
 /* ── Ghost variant ─────────────────────────────────────────── */
@@ -80,7 +89,7 @@
   background: var(--blue-dim);
   border: 1px solid var(--border);
   color: var(--blue);
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 0.625rem;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -106,7 +115,7 @@
   background: none;
   border: none;
   color: var(--muted);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: "Rajdhani", sans-serif;
   font-size: 0.75rem;
   letter-spacing: 2px;
   cursor: pointer;
@@ -118,4 +127,12 @@
 
 .text:hover {
   color: var(--blue);
+}
+
+.unstyled {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

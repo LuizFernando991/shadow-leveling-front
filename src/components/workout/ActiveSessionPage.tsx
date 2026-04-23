@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 
 import styles from "./ActiveSessionPage.module.css";
 
+import { Button } from "@/components/ui/Button";
 import { useTimer } from "@/hooks/useTimer";
 import { saveSession, loadSession, clearSession } from "@/lib/session-storage";
 import {
@@ -19,6 +20,34 @@ interface SetState {
   weight: string;
   duration: string;
   done: boolean;
+}
+
+interface SetValueInputProps {
+  placeholder: string;
+  unit: string;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+function SetValueInput({
+  placeholder,
+  unit,
+  value,
+  onChange,
+}: SetValueInputProps) {
+  return (
+    <>
+      <input
+        className={styles.setInput}
+        type="number"
+        inputMode="decimal"
+        placeholder={placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+      <span className={styles.setUnit}>{unit}</span>
+    </>
+  );
 }
 
 function buildSetRows(
@@ -283,39 +312,33 @@ export function ActiveSessionPage({
                       <span className={styles.setNum}>S{s.num}</span>
                       {!isTime ? (
                         <>
-                          <input
-                            className={styles.setInput}
-                            type="number"
+                          <SetValueInput
                             placeholder={String(we.reps_min ?? "")}
+                            unit="reps"
                             value={s.reps}
-                            onChange={(e) =>
-                              updateSet(we.id, idx, "reps", e.target.value)
+                            onChange={(value) =>
+                              updateSet(we.id, idx, "reps", value)
                             }
                           />
-                          <span className={styles.setUnit}>reps</span>
-                          <input
-                            className={styles.setInput}
-                            type="number"
+                          <SetValueInput
                             placeholder="—"
+                            unit="kg"
                             value={s.weight}
-                            onChange={(e) =>
-                              updateSet(we.id, idx, "weight", e.target.value)
+                            onChange={(value) =>
+                              updateSet(we.id, idx, "weight", value)
                             }
                           />
-                          <span className={styles.setUnit}>kg</span>
                         </>
                       ) : (
                         <>
-                          <input
-                            className={styles.setInput}
-                            type="number"
+                          <SetValueInput
                             placeholder={String(we.duration ?? "")}
+                            unit="seg"
                             value={s.duration}
-                            onChange={(e) =>
-                              updateSet(we.id, idx, "duration", e.target.value)
+                            onChange={(value) =>
+                              updateSet(we.id, idx, "duration", value)
                             }
                           />
-                          <span className={styles.setUnit}>seg</span>
                         </>
                       )}
                       <button
@@ -355,21 +378,23 @@ export function ActiveSessionPage({
         })}
 
         <div className={styles.actions}>
-          <button
+          <Button
+            variant="unstyled"
             className={`${styles.btn} ${styles.btnGhost}`}
             onClick={() =>
               navigate({ to: "/workout/$workoutId", params: { workoutId } })
             }
           >
             SAIR
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="unstyled"
             className={`${styles.btn} ${styles.btnPrimary}`}
             onClick={finish}
             disabled={finishMutation.isPending}
           >
             {finishMutation.isPending ? "FINALIZANDO..." : "✓ FINALIZAR SESSÃO"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

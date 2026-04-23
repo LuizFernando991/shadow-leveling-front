@@ -52,6 +52,29 @@ export function clearSession(): void {
   localStorage.removeItem(KEY);
 }
 
+export function getStoredSession(): StoredSession | null {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return null;
+    const stored = JSON.parse(raw) as StoredSession;
+    if (!isValid(stored)) {
+      localStorage.removeItem(KEY);
+      return null;
+    }
+    return stored;
+  } catch {
+    localStorage.removeItem(KEY);
+    return null;
+  }
+}
+
+export function resetStoredSession(workoutId?: string): void {
+  const stored = getStoredSession();
+  if (!stored) return;
+  if (workoutId && stored.workoutId !== workoutId) return;
+  clearSession();
+}
+
 export function pruneStaleSession(): void {
   try {
     const raw = localStorage.getItem(KEY);
