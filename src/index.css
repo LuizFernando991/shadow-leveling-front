@@ -22,6 +22,7 @@
   --yellow: oklch(80% 0.18 80);
   --green-dim: oklch(72% 0.2 145 / 0.1);
   --red-dim: oklch(62% 0.22 25 / 0.1);
+  --yellow-dim: oklch(80% 0.18 80 / 0.1);
 
   font-family: "Rajdhani", sans-serif;
   color-scheme: dark;
@@ -39,6 +40,34 @@ body,
 
 body {
   overflow: hidden;
+}
+
+/* ── Scrollbars ── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(72% 0.22 220 / 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: oklch(72% 0.22 220 / 0.35);
+  border-radius: 0;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: oklch(72% 0.22 220 / 0.6);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 input[type="number"] {

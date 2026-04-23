@@ -9,6 +9,7 @@ import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
 import { DashboardPage } from "@/components/dashboard/DashboardPage/DashboardPage";
 import { LoginPage } from "@/components/login/LoginPage/LoginPage";
+import { TasksPage } from "@/components/tasks/TasksPage/TasksPage";
 import { ActiveSessionPage } from "@/components/workout/ActiveSessionPage/ActiveSessionPage";
 import { SessionCompletePage } from "@/components/workout/SessionCompletePage/SessionCompletePage";
 import { WorkoutDetailPage } from "@/components/workout/WorkoutDetailPage/WorkoutDetailPage";
@@ -53,6 +54,15 @@ const dashboardRoute = createRoute({
     if (!context.auth.user) throw redirect({ to: "/login" });
   },
   component: DashboardPage,
+});
+
+const tasksRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/tasks",
+  beforeLoad: ({ context }) => {
+    if (!context.auth.user) throw redirect({ to: "/login" });
+  },
+  component: TasksPage,
 });
 
 const workoutListRoute = createRoute({
@@ -125,6 +135,7 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
   dashboardRoute,
+  tasksRoute,
   workoutListRoute,
   workoutDetailRoute,
   activeSessionRoute,
