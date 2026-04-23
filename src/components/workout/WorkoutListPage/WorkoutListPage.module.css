@@ -1,0 +1,64 @@
+.content {
+  flex: 1;
+  padding: 1.25rem;
+  max-width: 37.5rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 6rem;
+}
+
+/* ── Greeting header ── */
+.greeting {
+  margin-bottom: 1.5rem;
+}
+
+.greetingTitle {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 16px oklch(72% 0.22 220 / 0.4));
+  margin-bottom: 0.25rem;
+}
+
+.greetingDate {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: capitalize;
+}
+
+/* ── Rest day card ── */
+.restCard {
+  border: 1px solid var(--border);
+  padding: 2rem 1.25rem;
+  margin-bottom: 1.25rem;
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+  background: oklch(10% 0.05 240 / 0.9);
+  text-align: center;
+}
+
+.restIcon {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 4px;
+}
+
+.restTitle {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.375rem;
+}
+
+.restDesc {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}

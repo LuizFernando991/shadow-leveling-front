@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 
-import { LoadingOverlay } from "@/components/loading/LoadingOverlay";
+import { LoadingOverlay } from "@/components/loading/LoadingOverlay/LoadingOverlay";
 import { useAuth } from "@/hooks/useAuth";
 
 interface AppInitProviderProps {

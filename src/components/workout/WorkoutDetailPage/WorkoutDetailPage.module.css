@@ -1,0 +1,282 @@
+.content {
+  flex: 1;
+  padding: 1.25rem;
+  max-width: 37.5rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 6rem;
+}
+
+/* ── Workout header ── */
+.workoutHeader {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.workoutName {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 0.375rem;
+}
+
+.workoutDesc {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.workoutMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.metaText {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+/* ── Exercise list row ── */
+.exRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--border);
+  background: oklch(8% 0.04 240 / 0.5);
+  margin-bottom: 0.5rem;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.exRow:hover {
+  border-color: var(--border-s);
+}
+
+.exNum {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.6875rem;
+  color: var(--blue);
+  min-width: 1.375rem;
+}
+
+.exInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.exName {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.exDetail {
+  font-size: 0.6875rem;
+  color: var(--muted);
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+.exActions {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.orderBtn {
+  width: 1.875rem;
+  height: 1.875rem;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+}
+
+.orderBtn:hover:not(:disabled) {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-dim);
+}
+
+.orderBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Active/inactive toggle ── */
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.toggleLabel {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.1875rem;
+}
+
+.toggleDesc {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.toggle {
+  position: relative;
+  width: 2.75rem;
+  height: 1.5rem;
+  cursor: pointer;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  position: absolute;
+  inset: 0;
+  background: oklch(20% 0.04 240);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.toggle input:checked + .toggleTrack {
+  background: var(--blue-dim);
+  border-color: var(--blue);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 1rem;
+  height: 1rem;
+  background: var(--muted);
+  clip-path: polygon(2px 0%, 100% 0%, calc(100% - 2px) 100%, 0% 100%);
+  transition: 0.3s;
+}
+
+.toggle input:checked ~ .toggleThumb {
+  left: 1.4375rem;
+  background: var(--blue);
+}
+
+/* ── Exercise search & picker ── */
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: oklch(8% 0.04 240 / 0.8);
+  border: 1px solid var(--border);
+  padding: 0.625rem 0.875rem;
+  margin-bottom: 0.875rem;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  color: var(--muted);
+}
+
+.searchInput {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.8125rem;
+  outline: none;
+  letter-spacing: 0.5px;
+}
+
+.searchInput::placeholder {
+  color: oklch(40% 0.04 240);
+}
+
+.exList {
+  max-height: 12.5rem;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.exListHint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  padding: 0.75rem 0.125rem;
+}
+
+.exPickItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--border);
+  margin-bottom: 0.375rem;
+  cursor: pointer;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  transition: all 0.2s;
+}
+
+.exPickItem:hover,
+.exPickItemSel {
+  border-color: var(--blue);
+  background: var(--blue-dim);
+}
+
+.exTypeIcon {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  color: var(--blue);
+  background: var(--blue-dim);
+  flex-shrink: 0;
+}
+
+.exPickName {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.exPickDetail {
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+
+.exPickCheck {
+  margin-left: auto;
+  color: var(--blue);
+  font-size: 1rem;
+}
+
+.selectedExBadge {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 1px;
+  color: var(--blue);
+  border: 1px solid var(--border);
+  background: var(--blue-dim);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.875rem;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  margin-bottom: 0.625rem;
+}

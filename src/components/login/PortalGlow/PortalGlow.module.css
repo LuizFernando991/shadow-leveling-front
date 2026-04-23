@@ -1,0 +1,30 @@
+.portal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(37.5rem, 110vw);
+  height: min(37.5rem, 110vw);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    oklch(55% 0.22 290 / 0.18) 0%,
+    oklch(72% 0.22 220 / 0.1) 40%,
+    transparent 70%
+  );
+  filter: blur(40px);
+  z-index: 1;
+  animation: portalPulse 4s ease-in-out infinite;
+}
+
+@keyframes portalPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}

@@ -7,12 +7,12 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
-import { DashboardPage } from "@/components/dashboard/DashboardPage";
-import { LoginPage } from "@/components/login/LoginPage";
-import { ActiveSessionPage } from "@/components/workout/ActiveSessionPage";
-import { SessionCompletePage } from "@/components/workout/SessionCompletePage";
-import { WorkoutDetailPage } from "@/components/workout/WorkoutDetailPage";
-import { WorkoutListPage } from "@/components/workout/WorkoutListPage";
+import { DashboardPage } from "@/components/dashboard/DashboardPage/DashboardPage";
+import { LoginPage } from "@/components/login/LoginPage/LoginPage";
+import { ActiveSessionPage } from "@/components/workout/ActiveSessionPage/ActiveSessionPage";
+import { SessionCompletePage } from "@/components/workout/SessionCompletePage/SessionCompletePage";
+import { WorkoutDetailPage } from "@/components/workout/WorkoutDetailPage/WorkoutDetailPage";
+import { WorkoutListPage } from "@/components/workout/WorkoutListPage/WorkoutListPage";
 import type { AuthContextValue } from "@/context/auth.context";
 
 interface RouterContext {
