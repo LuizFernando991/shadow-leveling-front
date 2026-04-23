@@ -10,6 +10,7 @@ interface TodayWorkoutCardProps {
   workout: WorkoutDetail;
   onStart: () => void;
   isStarting: boolean;
+  startLabel?: string;
   onNavigate: () => void;
   isCompletedToday: boolean;
 }
@@ -18,6 +19,7 @@ export function TodayWorkoutCard({
   workout,
   onStart,
   isStarting,
+  startLabel,
   onNavigate,
   isCompletedToday,
 }: TodayWorkoutCardProps) {
@@ -77,16 +79,15 @@ export function TodayWorkoutCard({
 
       <Button
         variant="unstyled"
-        className={`${shared.btn} ${shared.btnGreen}`}
+        className={`${shared.btn}`}
         style={{ marginTop: 0 }}
         onClick={onStart}
         disabled={isStarting}
       >
         {isStarting
           ? "INICIANDO..."
-          : isCompletedToday
-            ? "TREINAR NOVAMENTE"
-            : "⚡ INICIAR SESSÃO"}
+          : (startLabel ??
+            (isCompletedToday ? "TREINAR NOVAMENTE" : "INICIAR SESSÃO"))}
       </Button>
     </div>
   );

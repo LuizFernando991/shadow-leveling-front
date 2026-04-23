@@ -1,13 +1,23 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 
 import shared from "../styles/workout.shared.module.css";
 
 import styles from "./ActiveSessionPage.module.css";
 
+import { Button } from "@/components/ui/Button/Button";
 import { useTimer } from "@/hooks/useTimer";
-import { saveSession, loadSession, clearSession } from "@/lib/session-storage";
+import {
+  preventNegativeNumberInput,
+  sanitizeNonNegativeNumber,
+} from "@/lib/number-input";
+import {
+  saveSession,
+  loadSession,
+  clearSession,
+  getStoredSession,
+} from "@/lib/session-storage";
 import {
   updateWorkoutSession,
   recordSet,
@@ -62,7 +72,11 @@ export function ActiveSessionPage({
 }: ActiveSessionPageProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const elapsed = useTimer();
+  const savedSession = useMemo(() => {
+    const stored = getStoredSession();
+    return stored?.sessionId === sessionId ? stored : null;
+  }, [sessionId]);
+  const elapsed = useTimer(savedSession?.elapsedSeconds ?? 0);
 
   const cachedWorkout = queryClient.getQueryData<WorkoutDetail>([
     "workout",
@@ -75,7 +89,10 @@ export function ActiveSessionPage({
     initialData: cachedWorkout,
   });
 
-  const savedInputs = useMemo(() => loadSession(sessionId), [sessionId]);
+  const savedInputs = useMemo(
+    () => savedSession?.inputs ?? loadSession(sessionId),
+    [savedSession, sessionId],
+  );
 
   const exercises = useMemo(
     () =>
@@ -106,6 +123,10 @@ export function ActiveSessionPage({
     return init;
   }, [setData, exercises, savedInputs]);
 
+  const latestSetDataRef = useRef(effectiveSetData);
+  const latestElapsedRef = useRef(elapsed);
+  const skipPersistRef = useRef(false);
+
   const recordSetMutation = useMutation({
     mutationFn: (data: Parameters<typeof recordSet>[1]) =>
       recordSet(sessionId, data),
@@ -115,6 +136,7 @@ export function ActiveSessionPage({
     mutationFn: (status: "complete" | "incomplete") =>
       updateWorkoutSession(sessionId, { status }),
     onSuccess: (_, status) => {
+      skipPersistRef.current = true;
       clearSession();
       const allSets = Object.values(effectiveSetData).flat();
       const doneSets = allSets.filter((s) => s.done).length;
@@ -128,24 +150,59 @@ export function ActiveSessionPage({
     },
   });
 
-  function persistToStorage(nextData: Record<string, SetState[]>) {
-    const inputs: Record<
-      string,
-      { reps: string; weight: string; duration: string; done: boolean }
-    > = {};
-    for (const [weId, sets] of Object.entries(nextData)) {
-      for (const s of sets) {
-        inputs[`${weId}-${s.num}`] = {
-          reps: s.reps,
-          weight: s.weight,
-          duration: s.duration,
-          done: s.done,
-        };
+  const persistToStorage = useCallback(
+    (
+      nextData: Record<string, SetState[]>,
+      elapsedSeconds = latestElapsedRef.current,
+    ) => {
+      const inputs: Record<
+        string,
+        { reps: string; weight: string; duration: string; done: boolean }
+      > = {};
+
+      for (const [weId, sets] of Object.entries(nextData)) {
+        for (const s of sets) {
+          inputs[`${weId}-${s.num}`] = {
+            reps: s.reps,
+            weight: s.weight,
+            duration: s.duration,
+            done: s.done,
+          };
+        }
       }
+
+      saveSession({
+        sessionId,
+        workoutId,
+        inputs,
+        startedAt: Date.now(),
+        elapsedSeconds,
+      });
+    },
+    [sessionId, workoutId],
+  );
+
+  useEffect(() => {
+    latestSetDataRef.current = effectiveSetData;
+  }, [effectiveSetData]);
+
+  useEffect(() => {
+    latestElapsedRef.current = elapsed;
+  }, [elapsed]);
+
+  useEffect(() => {
+    function persistCurrentSession() {
+      if (skipPersistRef.current) return;
+      persistToStorage(latestSetDataRef.current, latestElapsedRef.current);
     }
-    // eslint-disable-next-line react-hooks/purity
-    saveSession({ sessionId, workoutId, inputs, startedAt: Date.now() });
-  }
+
+    window.addEventListener("pagehide", persistCurrentSession);
+
+    return () => {
+      window.removeEventListener("pagehide", persistCurrentSession);
+      persistCurrentSession();
+    };
+  }, [sessionId, workoutId, persistToStorage]);
 
   function updateSet(
     weId: string,
@@ -204,7 +261,8 @@ export function ActiveSessionPage({
     <div className={shared.page}>
       <header className={shared.topbar}>
         <div className={shared.topbarLeft}>
-          <button
+          <Button
+            variant="unstyled"
             className={shared.iconBtn}
             onClick={() =>
               navigate({ to: "/workout/$workoutId", params: { workoutId } })
@@ -220,7 +278,7 @@ export function ActiveSessionPage({
             >
               <path d="M19 12H5M5 12l7-7M5 12l7 7" />
             </svg>
-          </button>
+          </Button>
           <span className={shared.topbarTitle}>SESSÃO ATIVA</span>
         </div>
         <span className={styles.timer}>
@@ -287,21 +345,35 @@ export function ActiveSessionPage({
                           <input
                             className={styles.setInput}
                             type="number"
+                            min="0"
                             placeholder={String(we.reps_min ?? "")}
                             value={s.reps}
                             onChange={(e) =>
-                              updateSet(we.id, idx, "reps", e.target.value)
+                              updateSet(
+                                we.id,
+                                idx,
+                                "reps",
+                                sanitizeNonNegativeNumber(e.target.value),
+                              )
                             }
+                            onKeyDown={preventNegativeNumberInput}
                           />
                           <span className={styles.setUnit}>reps</span>
                           <input
                             className={styles.setInput}
                             type="number"
+                            min="0"
                             placeholder="—"
                             value={s.weight}
                             onChange={(e) =>
-                              updateSet(we.id, idx, "weight", e.target.value)
+                              updateSet(
+                                we.id,
+                                idx,
+                                "weight",
+                                sanitizeNonNegativeNumber(e.target.value),
+                              )
                             }
+                            onKeyDown={preventNegativeNumberInput}
                           />
                           <span className={styles.setUnit}>kg</span>
                         </>
@@ -310,16 +382,24 @@ export function ActiveSessionPage({
                           <input
                             className={styles.setInput}
                             type="number"
+                            min="0"
                             placeholder={String(we.duration ?? "")}
                             value={s.duration}
                             onChange={(e) =>
-                              updateSet(we.id, idx, "duration", e.target.value)
+                              updateSet(
+                                we.id,
+                                idx,
+                                "duration",
+                                sanitizeNonNegativeNumber(e.target.value),
+                              )
                             }
+                            onKeyDown={preventNegativeNumberInput}
                           />
                           <span className={styles.setUnit}>seg</span>
                         </>
                       )}
-                      <button
+                      <Button
+                        variant="unstyled"
                         className={`${styles.setCheck} ${s.done ? styles.setCheckDone : ""}`}
                         onClick={() => toggleDone(we, idx)}
                       >
@@ -346,7 +426,7 @@ export function ActiveSessionPage({
                             <circle cx="12" cy="12" r="5" />
                           </svg>
                         )}
-                      </button>
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -356,7 +436,8 @@ export function ActiveSessionPage({
         })}
 
         <div className={styles.actions}>
-          <button
+          <Button
+            variant="unstyled"
             className={`${shared.btn} ${shared.btnGhost} ${styles.actionGhost}`}
             style={{ marginTop: 0 }}
             onClick={() =>
@@ -364,15 +445,16 @@ export function ActiveSessionPage({
             }
           >
             SAIR
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="unstyled"
             className={`${shared.btn} ${shared.btnPrimary} ${styles.actionPrimary}`}
             style={{ marginTop: 0 }}
             onClick={finish}
             disabled={finishMutation.isPending}
           >
             {finishMutation.isPending ? "FINALIZANDO..." : "✓ FINALIZAR SESSÃO"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

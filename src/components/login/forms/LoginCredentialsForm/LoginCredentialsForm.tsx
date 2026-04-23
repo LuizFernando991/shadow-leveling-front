@@ -66,13 +66,14 @@ export function LoginCredentialsForm({
           autoComplete="current-password"
           {...register("password")}
         />
-        <button
+        <Button
+          variant="unstyled"
           type="button"
           className={formFieldStyles.togglePw}
           onClick={onTogglePassword}
         >
           {showPassword ? "OCULTAR" : "VER"}
-        </button>
+        </Button>
       </FormField>
 
       <div className={styles.options}>

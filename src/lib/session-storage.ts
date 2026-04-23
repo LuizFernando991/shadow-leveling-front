@@ -10,11 +10,12 @@ export interface SetInput {
 // keyed by `${weId}-${setNumber}`
 export type InputState = Record<string, SetInput>;
 
-interface StoredSession {
+export interface StoredSession {
   sessionId: string;
   workoutId: string;
   inputs: InputState;
   startedAt: number;
+  elapsedSeconds?: number;
 }
 
 function isValid(s: StoredSession): boolean {

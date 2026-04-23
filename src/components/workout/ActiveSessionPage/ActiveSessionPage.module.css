@@ -238,13 +238,33 @@
   display: flex;
   gap: 0.625rem;
   margin-top: 0.75rem;
+  width: 100%;
 }
 
 .actionGhost {
-  flex: 0 0 auto;
+  flex: 0 0 7.5rem;
+  width: auto;
   padding: 0.875rem 1.25rem;
+  margin-top: 0;
+  white-space: nowrap;
 }
 
 .actionPrimary {
   flex: 1;
+  min-width: 0;
+  width: auto;
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .actionGhost,
+  .actionPrimary {
+    flex: none;
+    width: 100%;
+  }
 }

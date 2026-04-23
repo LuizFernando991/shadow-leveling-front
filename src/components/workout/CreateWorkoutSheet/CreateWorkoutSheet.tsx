@@ -76,14 +76,15 @@ export function CreateWorkoutSheet({ open, onClose }: CreateWorkoutSheetProps) {
         <div className={shared.sectionLabel}>DIAS DA SEMANA</div>
         <div className={shared.daysRow}>
           {WORKOUT_DAYS.map(({ key, label }) => (
-            <button
+            <Button
+              variant="unstyled"
               key={key}
               type="button"
               className={`${shared.dayPill} ${days.includes(key) ? shared.dayPillOn : ""}`}
               onClick={() => toggleDay(key)}
             >
               {label}
-            </button>
+            </Button>
           ))}
         </div>
         {errors.days_of_week && (

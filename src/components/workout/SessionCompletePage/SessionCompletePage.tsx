@@ -4,6 +4,8 @@ import shared from "../styles/workout.shared.module.css";
 
 import styles from "./SessionCompletePage.module.css";
 
+import { Button } from "@/components/ui/Button/Button";
+
 interface SessionCompletePageProps {
   workoutId: string;
   doneSets: number;
@@ -91,20 +93,22 @@ export function SessionCompletePage({
           </div>
         </div>
 
-        <button
+        <Button
+          variant="unstyled"
           className={`${shared.btn} ${shared.btnPrimary}`}
           onClick={() =>
             navigate({ to: "/workout/$workoutId", params: { workoutId } })
           }
         >
           ← VOLTAR AO TREINO
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="unstyled"
           className={`${shared.btn} ${shared.btnGhost}`}
           onClick={() => navigate({ to: "/workout" })}
         >
           MEUS TREINOS
-        </button>
+        </Button>
       </div>
     </div>
   );

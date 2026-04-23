@@ -73,13 +73,14 @@ export function RegisterCredentialsForm({
           autoComplete="new-password"
           {...register("password")}
         />
-        <button
+        <Button
+          variant="unstyled"
           type="button"
           className={formFieldStyles.togglePw}
           onClick={onTogglePassword}
         >
           {showPassword ? "OCULTAR" : "VER"}
-        </button>
+        </Button>
       </FormField>
 
       <FormField

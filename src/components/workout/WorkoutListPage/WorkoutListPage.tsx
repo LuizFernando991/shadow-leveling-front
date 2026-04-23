@@ -11,6 +11,7 @@ import styles from "./WorkoutListPage.module.css";
 
 import { Button } from "@/components/ui/Button/Button";
 import { splitWorkoutsByToday } from "@/helpers/workout-split.helper";
+import { getStoredSession } from "@/lib/session-storage";
 import { createWorkoutSession } from "@/services/workout-session.service";
 import { listWorkouts } from "@/services/workout.service";
 
@@ -18,6 +19,7 @@ export function WorkoutListPage() {
   const navigate = useNavigate();
   const [showCreate, setShowCreate] = useState(false);
   const [startingId, setStartingId] = useState<string | null>(null);
+  const [storedSession, setStoredSession] = useState(() => getStoredSession());
 
   const { data: workouts = [], isLoading } = useQuery({
     queryKey: ["workouts"],
@@ -43,6 +45,18 @@ export function WorkoutListPage() {
   });
 
   function startSession(workoutId: string) {
+    const currentStoredSession = getStoredSession();
+    setStoredSession(currentStoredSession);
+
+    if (currentStoredSession?.workoutId === workoutId) {
+      navigate({
+        to: "/workout/$workoutId/session",
+        params: { workoutId },
+        search: { sessionId: currentStoredSession.sessionId },
+      });
+      return;
+    }
+
     setStartingId(workoutId);
     startSessionMutation.mutate(workoutId);
   }
@@ -59,7 +73,8 @@ export function WorkoutListPage() {
     <div className={shared.page}>
       <header className={shared.topbar}>
         <div className={shared.topbarLeft}>
-          <button
+          <Button
+            variant="unstyled"
             className={shared.iconBtn}
             onClick={() => navigate({ to: "/dashboard" })}
           >
@@ -73,7 +88,7 @@ export function WorkoutListPage() {
             >
               <path d="M19 12H5M5 12l7-7M5 12l7 7" />
             </svg>
-          </button>
+          </Button>
           <span className={shared.topbarTitle}>SHADOW GYM</span>
         </div>
         <Button
@@ -114,6 +129,11 @@ export function WorkoutListPage() {
                 workout={workout}
                 onStart={() => startSession(workout.id)}
                 isStarting={startingId === workout.id}
+                startLabel={
+                  storedSession?.workoutId === workout.id
+                    ? "Continue"
+                    : undefined
+                }
                 onNavigate={() =>
                   navigate({
                     to: "/workout/$workoutId",
@@ -153,6 +173,11 @@ export function WorkoutListPage() {
                 workout={workout}
                 onStart={() => startSession(workout.id)}
                 isStarting={startingId === workout.id}
+                startLabel={
+                  storedSession?.workoutId === workout.id
+                    ? "Continue"
+                    : undefined
+                }
                 onNavigate={() =>
                   navigate({
                     to: "/workout/$workoutId",

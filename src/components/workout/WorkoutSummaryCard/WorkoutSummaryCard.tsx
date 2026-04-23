@@ -10,6 +10,7 @@ interface WorkoutSummaryCardProps {
   workout: WorkoutDetail;
   onStart: () => void;
   isStarting: boolean;
+  startLabel?: string;
   onNavigate: () => void;
   isCompletedToday: boolean;
 }
@@ -18,6 +19,7 @@ export function WorkoutSummaryCard({
   workout,
   onStart,
   isStarting,
+  startLabel,
   onNavigate,
   isCompletedToday,
 }: WorkoutSummaryCardProps) {
@@ -90,9 +92,8 @@ export function WorkoutSummaryCard({
             >
               {isStarting
                 ? "..."
-                : isCompletedToday
-                  ? "↻ REPETIR"
-                  : "▶ INICIAR"}
+                : (startLabel ??
+                  (isCompletedToday ? "↻ REPETIR" : "▶ INICIAR"))}
             </Button>
           )}
         </div>
