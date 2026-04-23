@@ -89,7 +89,7 @@ export function WorkoutListPage() {
               <path d="M19 12H5M5 12l7-7M5 12l7 7" />
             </svg>
           </Button>
-          <span className={shared.topbarTitle}>SHADOW GYM</span>
+          <span className={shared.topbarTitle}>SHADOW LEVELING</span>
         </div>
         <Button
           variant="unstyled"

@@ -4,7 +4,7 @@ export function SystemAlert() {
   return (
     <div className={styles.alert}>
       <div className={styles.tag}>SISTEMA ATIVO</div>
-      <h1 className={styles.title}>LEVELING GYM</h1>
+      <h1 className={styles.title}>SHADOW LEVELING</h1>
       <p className={styles.sub}>Sistema de Evolução do Caçador</p>
     </div>
   );
