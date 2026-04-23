@@ -95,6 +95,7 @@ export function TasksPage() {
       queryClient.invalidateQueries({
         queryKey: ["tasks-month", d.getFullYear(), d.getMonth() + 1],
       });
+      queryClient.invalidateQueries({ queryKey: ["today-missions"] });
     },
   });
 

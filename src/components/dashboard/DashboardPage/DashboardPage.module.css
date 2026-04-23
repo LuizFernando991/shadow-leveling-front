@@ -1,25 +1,660 @@
-.screen {
+.page {
   height: 100%;
+  overflow-y: auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-  gap: 24px;
 }
 
-.title {
+/* ── Topbar ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.125rem;
+  height: 3.375rem;
+  border-bottom: 1px solid var(--border);
+  background: oklch(7% 0.04 240 / 0.96);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.logo {
   font-family: "Orbitron", sans-serif;
-  font-size: clamp(24px, 6vw, 40px);
+  font-size: 0.8125rem;
   font-weight: 900;
-  letter-spacing: 6px;
+  letter-spacing: 4px;
   background: linear-gradient(135deg, var(--blue), var(--purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 10px oklch(72% 0.22 220 / 0.4));
 }
 
-.email {
-  font-size: 13px;
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rankHex {
+  width: 1.875rem;
+  height: 1.875rem;
+  border: 1.5px solid var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--blue);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: var(--blue-dim);
+  flex-shrink: 0;
+}
+
+.userName {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ── Scrollable content ── */
+.content {
+  flex: 1;
+  padding: 1.125rem 1.125rem calc(1.5rem + var(--nav-h, 0rem));
+  max-width: 37.5rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fadeUp {
+  animation: fadeUp 0.4s ease both;
+}
+
+/* ── Hero ── */
+.heroGreeting {
+  font-family: "Orbitron", sans-serif;
+  font-size: clamp(1.125rem, 5vw, 1.5rem);
+  font-weight: 900;
+  letter-spacing: 3px;
+  background: linear-gradient(
+    135deg,
+    var(--blue) 0%,
+    oklch(78% 0.18 200) 50%,
+    var(--purple) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 14px oklch(72% 0.22 220 / 0.4));
+  margin-bottom: 4px;
+}
+
+.heroDate {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin-bottom: 1.375rem;
+  text-transform: capitalize;
+}
+
+/* ── Overview card ── */
+.overviewCard {
+  border: 1px solid var(--border-s);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+  background: oklch(10% 0.05 240 / 0.9);
+}
+
+.overviewCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--purple), var(--blue), transparent);
+}
+
+@keyframes scan {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.2;
+  }
+  95% {
+    opacity: 0.2;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.scanLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  animation: scan 5s linear infinite;
+  pointer-events: none;
+}
+
+.overviewTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.125rem;
+}
+
+.overviewLabel {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.625rem;
+  letter-spacing: 3px;
+  color: var(--muted);
+  margin-bottom: 0.375rem;
+}
+
+.overviewFraction {
+  font-family: "Orbitron", sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.overviewFractionTotal {
+  font-size: 1.125rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.overviewSub {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* Ring */
+.ringWrap {
+  position: relative;
+  width: 5rem;
+  height: 5rem;
+  flex-shrink: 0;
+}
+
+.ringWrap svg {
+  transform: rotate(-90deg);
+}
+
+.ringPct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringPctNum {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.ringPctLbl {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.4375rem;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+/* Progress bar */
+.progScale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.progTrack {
+  height: 3px;
+  background: oklch(72% 0.22 220 / 0.1);
+  clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%);
+  overflow: hidden;
+}
+
+.progFill {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Stat boxes ── */
+.statRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.625rem;
+  margin-bottom: 1.25rem;
+}
+
+.statBox {
+  border: 1px solid var(--border);
+  padding: 0.875rem 0.75rem;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.statBox::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.statBoxTotal::after {
+  background: var(--blue);
+}
+
+.statBoxDone::after {
+  background: var(--green);
+}
+
+.statBoxLeft::after {
+  background: var(--red);
+}
+
+.statVal {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.625rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.statLbl {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.4375rem;
   letter-spacing: 2px;
   color: var(--muted);
+}
+
+/* ── All-done banner ── */
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px oklch(72% 0.2 145 / 0.15);
+  }
+  50% {
+    box-shadow: 0 0 40px oklch(72% 0.2 145 / 0.3);
+  }
+}
+
+.completeBanner {
+  border: 1px solid oklch(72% 0.2 145 / 0.4);
+  padding: 1.25rem;
+  text-align: center;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  background: var(--green-dim);
+  margin-bottom: 0.875rem;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.completeBannerTitle {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.125rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+
+.completeBannerSub {
+  font-size: 0.8125rem;
+  color: oklch(72% 0.2 145 / 0.8);
+}
+
+/* ── Section label ── */
+.sectionLabel {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.5625rem;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.625rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sectionLabel::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.sectionCount {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.5625rem;
+  letter-spacing: 1px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Workout mission card ── */
+.workoutItem {
+  border: 1px solid var(--border);
+  margin-bottom: 0.875rem;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.workoutItem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--purple), transparent);
+}
+
+.workoutItemRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+}
+
+.workoutItemIcon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  background: var(--blue-dim);
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.workoutItemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.workoutItemName {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workoutItemDesc {
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+
+/* Badge shared */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.4375rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%);
+  white-space: nowrap;
+}
+
+.badge::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.badgeGreen {
+  color: var(--green);
+  background: var(--green-dim);
+  border: 1px solid oklch(72% 0.2 145 / 0.3);
+}
+
+.badgePending {
+  color: var(--muted);
+  background: oklch(55% 0.05 240 / 0.1);
+  border: 1px solid oklch(55% 0.05 240 / 0.2);
+}
+
+.workoutItemCta {
+  padding: 0 1rem 0.875rem;
+}
+
+.workoutBtn {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid var(--border-s);
+  background: var(--blue-dim);
+  color: var(--blue);
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: all 0.2s;
+}
+
+.workoutBtn:hover {
+  box-shadow: 0 0 20px oklch(72% 0.22 220 / 0.25);
+  background: oklch(72% 0.22 220 / 0.2);
+}
+
+/* ── Rest day card ── */
+.restCard {
+  border: 1px solid var(--border);
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  background: var(--surface);
+  margin-bottom: 0.875rem;
+}
+
+.restNum {
+  font-family: "Orbitron", sans-serif;
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: oklch(25% 0.05 240);
+  letter-spacing: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.restTitle {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.25rem;
+}
+
+.restDesc {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+/* ── Task mission item ── */
+.taskItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.6875rem 0.875rem;
+  border: 1px solid var(--border);
+  margin-bottom: 0.4375rem;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.taskItemDone {
+  opacity: 0.42;
+}
+
+.taskItemDone .taskItemTitle {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.taskStripe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+}
+
+.taskDot {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%);
+  background: none;
+  color: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.taskDot:hover:not(.taskDotDone):not(.taskDotDisabled) {
+  border-color: var(--blue);
+}
+
+.taskDotDone {
+  border-color: var(--green);
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+.taskDotDisabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.taskItemBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.taskItemTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
+.taskItemMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+  flex-wrap: wrap;
+}
+
+.taskBadgeRed {
+  color: var(--red);
+  background: var(--red-dim);
+  border: 1px solid oklch(62% 0.22 25 / 0.3);
+}
+
+.taskBadgeYellow {
+  color: var(--yellow);
+  background: var(--yellow-dim);
+  border: 1px solid oklch(80% 0.18 80 / 0.3);
+}
+
+.taskBadgeBlue {
+  color: var(--blue);
+  background: var(--blue-dim);
+  border: 1px solid oklch(72% 0.22 220 / 0.3);
+}
+
+.taskBadgeMuted {
+  color: var(--muted);
+  background: oklch(55% 0.05 240 / 0.1);
+  border: 1px solid oklch(55% 0.05 240 / 0.2);
+}
+
+.optionalTag {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.4375rem;
+  letter-spacing: 1px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  clip-path: polygon(2px 0%, 100% 0%, calc(100% - 2px) 100%, 0% 100%);
+}
+
+/* ── Loading/empty ── */
+.empty {
+  text-align: center;
+  padding: 2.5rem 0;
+  color: var(--muted);
+}
+
+.emptyTitle {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 380px) {
+  .statRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .statRow .statBox:last-child {
+    grid-column: 1 / -1;
+  }
 }

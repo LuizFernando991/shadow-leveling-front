@@ -8,6 +8,7 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
 import { DashboardPage } from "@/components/dashboard/DashboardPage/DashboardPage";
+import { AppLayout } from "@/components/layout/AppLayout/AppLayout";
 import { LoginPage } from "@/components/login/LoginPage/LoginPage";
 import { TasksPage } from "@/components/tasks/TasksPage/TasksPage";
 import { ActiveSessionPage } from "@/components/workout/ActiveSessionPage/ActiveSessionPage";
@@ -47,30 +48,30 @@ const loginRoute = createRoute({
   component: LoginPage,
 });
 
-const dashboardRoute = createRoute({
+const appLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/dashboard",
+  id: "app",
   beforeLoad: ({ context }) => {
     if (!context.auth.user) throw redirect({ to: "/login" });
   },
+  component: AppLayout,
+});
+
+const dashboardRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: "/dashboard",
   component: DashboardPage,
 });
 
 const tasksRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: "/tasks",
-  beforeLoad: ({ context }) => {
-    if (!context.auth.user) throw redirect({ to: "/login" });
-  },
   component: TasksPage,
 });
 
 const workoutListRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => appLayoutRoute,
   path: "/workout",
-  beforeLoad: ({ context }) => {
-    if (!context.auth.user) throw redirect({ to: "/login" });
-  },
   component: WorkoutListPage,
 });
 
@@ -134,9 +135,7 @@ const sessionCompleteRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
-  dashboardRoute,
-  tasksRoute,
-  workoutListRoute,
+  appLayoutRoute.addChildren([dashboardRoute, workoutListRoute, tasksRoute]),
   workoutDetailRoute,
   activeSessionRoute,
   sessionCompleteRoute,

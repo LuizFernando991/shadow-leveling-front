@@ -136,6 +136,8 @@ export function ActiveSessionPage({
     onSuccess: (_, status) => {
       skipPersistRef.current = true;
       clearSession();
+      queryClient.invalidateQueries({ queryKey: ["today-missions"] });
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
       const allSets = Object.values(effectiveSetData).flat();
       const doneSets = allSets.filter((s) => s.done).length;
       const totalSets = allSets.length;

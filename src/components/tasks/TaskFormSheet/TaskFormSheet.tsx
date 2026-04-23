@@ -155,6 +155,7 @@ export function TaskFormSheet({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks-month"] });
       queryClient.invalidateQueries({ queryKey: ["tasks-day"] });
+      queryClient.invalidateQueries({ queryKey: ["today-missions"] });
       reset();
       onClose();
     },
